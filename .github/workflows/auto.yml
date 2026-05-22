@@ -1,0 +1,45 @@
+name: Revenuecat Auto Sync
+
+on:
+  schedule:
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 拉取仓库
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. 下载原作者文件
+      - name: Download latest file
+        run: |
+          curl -L \
+          https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js \
+          -o Revenuecat.js
+
+      # 3. 检查是否有变化
+      - name: Check changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_ENV
+          else
+            echo "changed=true" >> $GITHUB_ENV
+          fi
+
+      # 4. 自动提交
+      - name: Commit & Push
+        if: env.changed == 'true'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add Revenuecat.js
+          git commit -m "auto: sync Revenuecat.js"
+          git push
