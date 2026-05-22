@@ -1,25 +1,41 @@
-name: sync
+name: Revenuecat Auto Sync
 
 on:
+  schedule:
+    - cron: "0 */2 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
 
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
-      - uses: actions/checkout@v4
+      # 拉取仓库
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Download
+      # 下载原文件
+      - name: Download Revenuecat.js
         run: |
-          curl -L https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js -o Revenuecat.js
-          ls -la
+          curl -L \
+          https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js \
+          -o Revenuecat.js
 
-      - name: Commit
+      # 提交
+      - name: Commit & Push
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
           git add Revenuecat.js
-          git commit -m "sync"
+
+          git diff --cached --quiet && exit 0
+
+          git commit -m "auto: sync Revenuecat.js"
           git push
