@@ -12,30 +12,29 @@ jobs:
   sync:
     runs-on: ubuntu-latest
 
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
-      # 拉取仓库
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 下载原文件
-      - name: Download Revenuecat.js
+      - name: Download Files
         run: |
           curl -L \
-          https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js \
-          -o Revenuecat.js
+            https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js \
+            -o Revenuecat.js
 
-      # 提交
+          curl -L \
+            https://raw.githubusercontent.com/chxm1023/Rewrite/main/iTunes.js \
+            -o iTunes.js
+
       - name: Commit & Push
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
           git add Revenuecat.js
+          git add iTunes.js
 
           git diff --cached --quiet && exit 0
 
-          git commit -m "auto: sync Revenuecat.js"
+          git commit -m "auto: sync js files"
           git push
