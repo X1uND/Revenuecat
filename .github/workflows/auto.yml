@@ -24,11 +24,7 @@ jobs:
 
           curl -L \
             https://raw.githubusercontent.com/chxm1023/Rewrite/main/iTunes.js \
-            -o iTunes.js
-
-          curl -L \
-            https://raw.githubusercontent.com/BOBOLAOSHIV587/Rules/main/JS/MeiTuXiuXiu/JS/MTXX.js \
-            -o MTXX.js            
+            -o iTunes.js         
 
       - name: Commit & Push
         run: |
@@ -37,7 +33,6 @@ jobs:
 
           git add Revenuecat.js
           git add iTunes.js
-          git add MTXX.js
 
           git diff --cached --quiet && exit 0
 
