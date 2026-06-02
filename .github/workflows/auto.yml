@@ -37,6 +37,7 @@ jobs:
 
           git add Revenuecat.js
           git add iTunes.js
+          git add MTXX.js
 
           git diff --cached --quiet && exit 0
 
