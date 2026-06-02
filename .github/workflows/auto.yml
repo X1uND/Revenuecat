@@ -26,6 +26,10 @@ jobs:
             https://raw.githubusercontent.com/chxm1023/Rewrite/main/iTunes.js \
             -o iTunes.js
 
+          curl -L \
+            https://raw.githubusercontent.com/BOBOLAOSHIV587/Rules/main/JS/MeiTuXiuXiu/JS/MTXX.js \
+            -o iTunes.js            
+
       - name: Commit & Push
         run: |
           git config user.name "github-actions"
