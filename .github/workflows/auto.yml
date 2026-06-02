@@ -28,7 +28,7 @@ jobs:
 
           curl -L \
             https://raw.githubusercontent.com/BOBOLAOSHIV587/Rules/main/JS/MeiTuXiuXiu/JS/MTXX.js \
-            -o iTunes.js            
+            -o MTXX.js            
 
       - name: Commit & Push
         run: |
