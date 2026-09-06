@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download Files
         run: |
@@ -24,7 +24,7 @@ jobs:
 
           curl -L \
             https://raw.githubusercontent.com/chxm1023/Rewrite/main/iTunes.js \
-            -o iTunes.js         
+            -o iTunes.js
 
       - name: Commit & Push
         run: |
@@ -34,7 +34,64 @@ jobs:
           git add Revenuecat.js
           git add iTunes.js
 
-          git diff --cached --quiet && exit 0
+          if git diff --cached --quiet; then
+            echo "No JS file changes."
+          else
+            git commit -m "auto: sync js files"
+            git push
+          fi
 
-          git commit -m "auto: sync js files"
-          git push
+          # ==========================================================
+          # 40 天维护仓库活动
+          #
+          # heartbeat 文件：
+          # .github/sync-heartbeat
+          #
+          # 如果距离上一次 heartbeat >= 40 天，
+          # 创建一次维护 commit。
+          # ==========================================================
+
+          echo "=== Check 40-day repository activity ==="
+
+          HEARTBEAT_FILE=".github/sync-heartbeat"
+
+          mkdir -p .github
+
+          if [ -f "$HEARTBEAT_FILE" ]; then
+            LAST_HEARTBEAT=$(cat "$HEARTBEAT_FILE")
+
+            LAST_HEARTBEAT_TS=$(
+              date -d "$LAST_HEARTBEAT" +%s 2>/dev/null || echo 0
+            )
+          else
+            LAST_HEARTBEAT_TS=0
+          fi
+
+          NOW_TS=$(date +%s)
+
+          if [ "$LAST_HEARTBEAT_TS" -eq 0 ]; then
+            DAYS=999
+          else
+            DAYS=$(( (NOW_TS - LAST_HEARTBEAT_TS) / 86400 ))
+          fi
+
+          echo "Days since last heartbeat: ${DAYS}"
+
+          if [ "$DAYS" -ge 40 ]; then
+            NOW_UTC=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+            echo "Creating heartbeat: ${NOW_UTC}"
+
+            printf '%s\n' "$NOW_UTC" > "$HEARTBEAT_FILE"
+
+            git add "$HEARTBEAT_FILE"
+
+            git commit \
+              -m "chore: keep repository active"
+
+            git push origin HEAD
+
+            echo "=== Heartbeat commit completed ==="
+          else
+            echo "No heartbeat required."
+          fi
