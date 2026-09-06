@@ -17,17 +17,59 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Download Files
+        shell: bash
         run: |
-          curl -L \
-            https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js \
-            -o Revenuecat.js
+          set -e
 
-          curl -L \
+          echo "=== Download Reheji.js ==="
+
+          if curl -fL \
+            https://raw.githubusercontent.com/chxm1023/Rewrite/main/Reheji.js \
+            -o /tmp/Reheji.js; then
+
+            cp /tmp/Reheji.js Revenuecat.js
+            echo "Reheji.js downloaded successfully."
+
+          else
+
+            echo "Upstream Reheji.js does not exist."
+
+            if [ -f "Revenuecat.js" ]; then
+              echo "Deleting local Revenuecat.js"
+              rm -f Revenuecat.js
+            else
+              echo "Local Revenuecat.js also does not exist."
+            fi
+
+          fi
+
+          echo "=== Download iTunes.js ==="
+
+          if curl -fL \
             https://raw.githubusercontent.com/chxm1023/Rewrite/main/iTunes.js \
-            -o iTunes.js
+            -o /tmp/iTunes.js; then
+
+            cp /tmp/iTunes.js iTunes.js
+            echo "iTunes.js downloaded successfully."
+
+          else
+
+            echo "Upstream iTunes.js does not exist."
+
+            if [ -f "iTunes.js" ]; then
+              echo "Deleting local iTunes.js"
+              rm -f iTunes.js
+            else
+              echo "Local iTunes.js also does not exist."
+            fi
+
+          fi
 
       - name: Commit & Push
+        shell: bash
         run: |
+          set -e
+
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
@@ -95,3 +137,5 @@ jobs:
           else
             echo "No heartbeat required."
           fi
+
+          echo "=== Sync completed ==="
