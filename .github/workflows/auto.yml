@@ -32,14 +32,8 @@ jobs:
 
           else
 
-            echo "Upstream Reheji.js does not exist."
-
-            if [ -f "Revenuecat.js" ]; then
-              echo "Deleting local Revenuecat.js"
-              rm -f Revenuecat.js
-            else
-              echo "Local Revenuecat.js also does not exist."
-            fi
+            echo "Upstream Reheji.js does not exist or is temporarily unavailable."
+            echo "Keeping local Revenuecat.js unchanged."
 
           fi
 
@@ -54,14 +48,8 @@ jobs:
 
           else
 
-            echo "Upstream iTunes.js does not exist."
-
-            if [ -f "iTunes.js" ]; then
-              echo "Deleting local iTunes.js"
-              rm -f iTunes.js
-            else
-              echo "Local iTunes.js also does not exist."
-            fi
+            echo "Upstream iTunes.js does not exist or is temporarily unavailable."
+            echo "Keeping local iTunes.js unchanged."
 
           fi
 
